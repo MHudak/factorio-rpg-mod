@@ -10,7 +10,7 @@ local function button_png(xpos, ypos)
         left_monolith_border = 0,
 
         monolith_image = {
-            filename = "__rpgsProperty__/graphics/gui.png",
+            filename = "__skill-leveling__/graphics/gui.png",
             priority = "extra-high-no-scale",
             width = 16,
             height = 16,
