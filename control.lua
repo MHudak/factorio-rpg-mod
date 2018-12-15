@@ -63,7 +63,6 @@ function CreateGui(index)
             inventory_slots=0,
             logistic_slot_count=0,
             trash_slot_count=0,
-            following_robots=0,
             health=0
         }
     )
@@ -663,45 +662,7 @@ function CreateGui(index)
         parent = "slot_button",
         --align = "right",
         caption = {"property.upgrade_button"}
-    }
-    
-     local label3_14_1 = layout3.add{
-        type = "label",
-        name = "label3_14_1",
-        style = "caption_label",
-        caption = {"property.following_robots_label"}
-    }
-    local label3_14_2 = layout3.add{
-        type = "label",
-        name = "label3_14_2",
-        caption = "+"
-    }
-    local label3_14_3 = layout3.add{
-        type = "label",
-        name = "label3_14_3",
-        caption = "0"
-    }
-    local label3_14_4 = layout3.add{
-        type = "label",
-        name = "label3_14_4",
-        style = "caption_label",
-        caption = "个"
-    }
-    local label3_14_5 = layout3.add{
-        type = "label",
-        name = "label3_14_5",
-        style = "caption_label",
-        caption = "(20)"
-    }
-    label3_14_5.style.font_color = { r=1, g=0.6, b=0.6 }
-    local upgrade_button14 = layout3.add{
-        type = "button",
-        name = "following_robots",
-        parent = "slot_button",
-        --align = "right",
-        caption = {"property.upgrade_button"}
-    }
-    
+    }    
      local label3_15_1 = layout3.add{
         type = "label",
         name = "label3_15_1",
@@ -799,7 +760,7 @@ function OnPlayerMinedTile(event)
     local player = global.players[index]
 
     --TODO - test mining xp
-    AddExp(index, 1/(1000+player.lv) / , "")
+    AddExp(index, 1/(1000+player.lv) , "")
 end
 
 function Refresh()
@@ -971,16 +932,6 @@ function OnGuiClick(event)
         else
             NoPoint(player)
         end
-    elseif event.element.name == "following_robots" then
-        if global.rpg.players[index].point >=20 then
-            global.rpg.players[index].point = global.rpg.players[index].point - 20
-            global.rpg.players[index].following_robots = global.rpg.players[index].following_robots + 1
-            player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
-            player.character_maximum_following_robot_count_bonus = player.character_maximum_following_robot_count_bonus + 1
-            player.gui.left.rpg.layout3.label3_14_3.caption = player.character_maximum_following_robot_count_bonus
-        else
-            NoPoint(player)
-        end
     elseif event.element.name == "health" then
         if global.rpg.players[index].point >=1 then
             global.rpg.players[index].point = global.rpg.players[index].point - 1
@@ -1095,7 +1046,6 @@ function gui_settings(event)
     player.character_inventory_slots_bonus = 0
     player.character_logistic_slot_count_bonus = 0
     player.character_trash_slot_count_bonus = 0
-    player.character_maximum_following_robot_count_bonus = 0
     player.character_health_bonus = 0
 
     player.gui.left.rpg.layout3.label3_1_3.caption = 0
