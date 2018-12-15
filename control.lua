@@ -1,8 +1,3 @@
---[[
-武器和挖掘用的稿子根据使用次数升级
-护甲根据收到的伤害总量升级
-]]
-
 require("function")
 
 
@@ -791,7 +786,7 @@ function onPlayerCraftedItem(event)
             tmpExp = tmpExp + (item.amount / (1000+player.lv))
         end
     end
-    AddExp(index, tmpExp, {"", {"property.crafting"}, " ", event.recipe.localised_name, " ", {"property.experience"}, "+", string.format("%.2f", (tmpExp * 100))})
+    AddExp(index, tmpExp * event.recipe.energy, {"", {"property.crafting"}, " ", event.recipe.localised_name, " ", {"property.experience"}, "+", string.format("%.2f", (tmpExp * 100))})
 end
 
 function OnPlayerRespawned(event)
