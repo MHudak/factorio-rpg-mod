@@ -63,7 +63,8 @@ function CreateGui(index)
             inventory_slots=0,
             logistic_slot_count=0,
             trash_slot_count=0,
-            health=0
+            health=0,
+            mining_drill_productivity_bonus=0
         }
     )
     --local global.rpg.players[event.player_index].exp=0
@@ -552,133 +553,70 @@ function CreateGui(index)
         --align = "right",
         caption = {"property.upgrade_button"}
     }
-    
-     local label3_11_1 = layout3.add{
-        type = "label",
-        name = "label3_11_1",
-        style = "caption_label",
-        caption = {"property.inventory_slots_label"}
-    }
-    local label3_11_2 = layout3.add{
-        type = "label",
-        name = "label3_11_2",
-        caption = "+"
-    }
-    local label3_11_3 = layout3.add{
-        type = "label",
-        name = "label3_11_3",
-        caption = "0"
-    }
-    local label3_11_4 = layout3.add{
-        type = "label",
-        name = "label3_11_4",
-        style = "caption_label",
-        caption = {"property.unit_grid"}
-    }
-    local label3_11_5 = layout3.add{
-        type = "label",
-        name = "label3_11_5",
-        style = "caption_label",
-        caption = "(10)"
-    }
-    label3_11_5.style.font_color = { r=1, g=0.6, b=0.6 }
-    local upgrade_button11 = layout3.add{
-        type = "button",
-        name = "inventory_slots",
-        parent = "slot_button",
-        --align = "right",
-        caption = {"property.upgrade_button"}
-    }
-    
-     local label3_12_1 = layout3.add{
-        type = "label",
-        name = "label3_12_1",
-        style = "caption_label",
-        caption = {"property.logistic_slot_count_label"}
-    }
-    local label3_12_2 = layout3.add{
-        type = "label",
-        name = "label3_12_2",
-        caption = "+"
-    }
-    local label3_12_3 = layout3.add{
-        type = "label",
-        name = "label3_12_3",
-        caption = "0"
-    }
-    local label3_12_4 = layout3.add{
-        type = "label",
-        name = "label3_12_4",
-        style = "caption_label",
-        caption = {"property.unit_grid"}
-    }
-    local label3_12_5 = layout3.add{
-        type = "label",
-        name = "label3_12_5",
-        style = "caption_label",
-        caption = "(8)"
-    }
-    label3_12_5.style.font_color = { r=1, g=0.6, b=0.6 }
-    local upgrade_button12 = layout3.add{
-        type = "button",
-        name = "logistic_slot_count",
-        parent = "slot_button",
-        --align = "right",
-        caption = {"property.upgrade_button"}
-    }
-    
-     local label3_13_1 = layout3.add{
-        type = "label",
-        name = "label3_13_1",
-        style = "caption_label",
-        caption = {"property.trash_slot_count_label"}
-    }
-    local label3_13_2 = layout3.add{
-        type = "label",
-        name = "label3_13_2",
-        caption = "+"
-    }
-    local label3_13_3 = layout3.add{
-        type = "label",
-        name = "label3_13_3",
-        caption = "0"
-    }
-    local label3_13_4 = layout3.add{
-        type = "label",
-        name = "label3_13_4",
-        style = "caption_label",
-        caption = {"property.unit_grid"}
-    }
-    local label3_13_5 = layout3.add{
-        type = "label",
-        name = "label3_13_5",
-        style = "caption_label",
-        caption = "(8)"
-    }
-    label3_13_5.style.font_color = { r=1, g=0.6, b=0.6 }
-    local upgrade_button13 = layout3.add{
-        type = "button",
-        name = "trash_slot_count",
-        parent = "slot_button",
-        --align = "right",
-        caption = {"property.upgrade_button"}
-    }    
 
+    --add inventory slot count
+    addGUIRow(
+        layout3,
+        {"property.inventory_slots_label"},
+        "player_inventory_slots_bonus",
+        {"property.unit_grid"},
+        10,
+        "inventory_slots"
+    )
+
+    --add logistics trash slot count
+    addGUIRow(
+        layout3,
+        {"property.logistic_slot_count_label"},
+        "player_logistic_slot_count_bonus",
+        {"property.unit_grid"},
+        8,
+        "logistic_slot_count"
+    )
+    
+    --add logistics trash slot count
+    addGUIRow(
+        layout3,
+        {"property.trash_slot_count_label"},
+        "player_trash_slot_count_bonus",
+        {"property.unit_grid"},
+        8,
+        "trash_slot_count"
+    )
+
+    --add max health increase
     addGUIRow(
         layout3,
         {"property.health_label"},
         "player_max_health_bonus",
         {"property.mhp"},
-        0,
+        1,
         "health"
-        )
+    )
+
+    --add mining productivity increase
+    addGUIRow(
+        layout3,
+        "Team mining drill productivity bonus percentage:",
+        "mining_drill_productivity_bonus",
+        {"property.unit_percent"},
+        1,
+        "mining_drill_productivity_bonus_button"
+    )
+
+    --add mining productivity increase
+    addGUIRow(
+        layout3,
+        "Team mining drill productivity bonus percentage:",
+        "mining_drill_productivity_bonus",
+        {"property.unit_percent"},
+        1,
+        "mining_drill_productivity_bonus_button"
+    )
      
 end
 
---player.health_bonus?
---{"property.mhp"}
---1
---health
+--TODO document function
 function addGUIRow(root_layout, bonus_description_label, bonus_label, bonus_type_label, cost_amount, button_name)
     root_layout.add{
         type = "label",
@@ -764,20 +702,10 @@ function onPlayerCraftedItem(event)
 end
 
 function OnPlayerRespawned(event)
-    Refresh()
-end
-
-function OnPlayerMinedTile(event)
-    --work around to only give xp on mined
+    --reset player stats
     local index = event.player_index
-    local player = global.players[index]
+    local player = global.rpg.players[index]
 
-    --TODO - test mining xp
-    AddExp(index, 1/(1000+player.lv) , "")
-end
-
-function Refresh()
-    local index = event.player_index
     player.character_crafting_speed_modifier = global.rpg.players[index].crafting_speed
     player.character_mining_speed_modifier  = global.rpg.players[index].mining_speed
     player.character_running_speed_modifier  = global.rpg.players[index].running_speed
@@ -793,7 +721,15 @@ function Refresh()
     player.character_trash_slot_count_bonus  = global.rpg.players[index].trash_slot_count
     player.character_maximum_following_robot_count_bonus  = global.rpg.players[index].following_robots
     player.character_health_bonus  = global.rpg.players[index].health
+end
 
+function OnPlayerMinedTile(event)
+    --work around to only give xp on mined
+    local index = event.player_index
+    local player = global.players[index]
+
+    --TODO - test mining xp
+    AddExp(index, 1/(1000+player.lv) , "")
 end
 
 function OnGuiClick(event)
@@ -921,7 +857,7 @@ function OnGuiClick(event)
             global.rpg.players[index].inventory_slots = global.rpg.players[index].inventory_slots + 1
             player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
             player.character_inventory_slots_bonus = player.character_inventory_slots_bonus + 1
-            player.gui.left.rpg.layout3.label3_11_3.caption = player.character_inventory_slots_bonus
+            player.gui.left.rpg.layout3.player_inventory_slots_bonus.caption = player.character_inventory_slots_bonus
         else
             NoPoint(player)
         end
@@ -931,7 +867,7 @@ function OnGuiClick(event)
             global.rpg.players[index].logistic_slot_count = global.rpg.players[index].logistic_slot_count + 1
             player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
             player.character_logistic_slot_count_bonus = player.character_logistic_slot_count_bonus + 1
-            player.gui.left.rpg.layout3.label3_12_3.caption = player.character_logistic_slot_count_bonus
+            player.gui.left.rpg.layout3.player_logistic_slot_count_bonus.caption = player.character_logistic_slot_count_bonus
         else
             NoPoint(player)
         end
@@ -941,7 +877,7 @@ function OnGuiClick(event)
             global.rpg.players[index].trash_slot_count = global.rpg.players[index].trash_slot_count + 1
             player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
             player.character_trash_slot_count_bonus = player.character_trash_slot_count_bonus + 1
-            player.gui.left.rpg.layout3.label3_13_3.caption = player.character_trash_slot_count_bonus
+            player.gui.left.rpg.layout3.player_trash_slot_count_bonus.caption = player.character_trash_slot_count_bonus
         else
             NoPoint(player)
         end
@@ -952,6 +888,22 @@ function OnGuiClick(event)
             player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
             player.character_health_bonus = player.character_health_bonus + 1
             player.gui.left.rpg.layout3.player_max_health_bonus.caption = player.character_health_bonus
+        else
+            NoPoint(player)
+        end
+    elseif event.element.name == "mining_drill_productivity_bonus_button" then
+        if global.rpg.players[index].point >=1 then
+            local increase_amount = .0005
+            global.rpg.players[index].point = global.rpg.players[index].point - 1
+            global.rpg.players[index].mining_drill_productivity_bonus = global.rpg.players[index].mining_drill_productivity_bonus + increase_amount
+            --update skill points remaining in ui
+            player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
+            
+            --apply increase to force
+            player.force.mining_drill_productivity_bonus = player.force.mining_drill_productivity_bonus + increase_amount;
+            
+            --update ui with percentage modified
+            player.gui.left.rpg.layout3.mining_drill_productivity_bonus.caption = string.format("%.2d", global.rpg.players[index].mining_drill_productivity_bonus*100)
         else
             NoPoint(player)
         end
@@ -1118,3 +1070,5 @@ script.on_event(defines.events.on_marked_for_deconstruction, OnMarkedForDeconstr
 script.on_event(defines.events.on_gui_click, OnGuiClick)
 -- script.on_event(defines.events.on_player_mined_tile, OnPlayerMinedTile)
 -- script.on_event(defines.events.on_player_mined_item, OnPlayerMinedTile)
+--todo affect team values when a player joins / leaves a game
+-- on_player_joined_game
