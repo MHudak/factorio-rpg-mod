@@ -1185,7 +1185,7 @@ function AddExp(index, Exp, Tips)
 end
 
 -- remove team upgrades from team when that player leaves
-function OnPlayerLeftGame(event)
+function OnPlayerJoinedGame(event)
     local index = event.player_index
     local player = global.players[index]
 
@@ -1199,7 +1199,7 @@ function OnPlayerLeftGame(event)
 end
 
 -- add team upgrades from team when that player joins
-function OnPlayerJoinedGame(event)
+function OnPlayerLeftGame(event)
     local index = event.player_index
     local player = global.players[index]
 
