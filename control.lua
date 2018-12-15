@@ -48,7 +48,7 @@ function CreateGui(index)
         global.rpg.players,
         {
             lv=1,
-            exp=0,
+            exp=1000,
             point=0,
             crafting_speed=0,
             mining_speed=0,
@@ -663,43 +663,56 @@ function CreateGui(index)
         --align = "right",
         caption = {"property.upgrade_button"}
     }    
-     local label3_15_1 = layout3.add{
+
+    addGUIRow(
+        layout3,
+        {"property.health_label"},
+        "player_max_health_bonus",
+        {"property.mhp"},
+        0,
+        "health"
+        )
+     
+end
+
+--player.health_bonus?
+--{"property.mhp"}
+--1
+--health
+function addGUIRow(root_layout, bonus_description_label, bonus_label, bonus_type_label, cost_amount, button_name)
+    root_layout.add{
         type = "label",
-        name = "label3_15_1",
         style = "caption_label",
-        caption = {"property.health_label"}
+        caption = bonus_description_label
     }
-    local label3_15_2 = layout3.add{
+    root_layout.add{
         type = "label",
-        name = "label3_15_2",
         caption = "+"
     }
-    local label3_15_3 = layout3.add{
+    root_layout.add{
         type = "label",
-        name = "label3_15_3",
+        name = bonus_label,
         caption = "0"
     }
-    local label3_15_4 = layout3.add{
+    root_layout.add{
         type = "label",
-        name = "label3_15_4",
         style = "caption_label",
-        caption = {"property.mhp"}
+        caption = bonus_type_label
     }
-    local label3_15_5 = layout3.add{
+    root_layout.add{
         type = "label",
-        name = "label3_15_5",
         style = "caption_label",
-        caption = "(1)"
-    }
-    label3_15_5.style.font_color = { r=1, g=0.6, b=0.6 }
-    local upgrade_button15 = layout3.add{
+        caption = "(" .. cost_amount .. ")"
+    }.style.font_color = { r=1, g=0.6, b=0.6 }
+    
+    root_layout.add{
         type = "button",
-        name = "health",
+        name = button_name,
         parent = "slot_button",
         --align = "right",
         caption = {"property.upgrade_button"}
     }
-     
+
 end
 
 -------------------------------------------------------------------------
@@ -938,7 +951,7 @@ function OnGuiClick(event)
             global.rpg.players[index].health = global.rpg.players[index].health + 1
             player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
             player.character_health_bonus = player.character_health_bonus + 1
-            player.gui.left.rpg.layout3.label3_15_3.caption = player.character_health_bonus
+            player.gui.left.rpg.layout3.player_max_health_bonus.caption = player.character_health_bonus
         else
             NoPoint(player)
         end
@@ -1062,7 +1075,7 @@ function gui_settings(event)
     player.gui.left.rpg.layout3.label3_12_3.caption = 0
     player.gui.left.rpg.layout3.label3_13_3.caption = 0
     player.gui.left.rpg.layout3.label3_14_3.caption = 0
-    player.gui.left.rpg.layout3.label3_15_3.caption = 0
+    -- player.gui.left.rpg.layout3.label3_15_3.caption = 0
 end
 
 function AddExp(index, Exp, Tips)
