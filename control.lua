@@ -64,7 +64,12 @@ function CreateGui(index)
             logistic_slot_count=0,
             trash_slot_count=0,
             health=0,
-            mining_drill_productivity_bonus=0
+            mining_drill_productivity_bonus=0,
+            laboratory_speed_modifier=0,
+            laboratory_productivity_bonus=0,
+            worker_robots_speed_modifier=0,
+            worker_robots_battery_modifier=0,
+            worker_robots_storage_bonus=0
         }
     )
     --local global.rpg.players[event.player_index].exp=0
@@ -607,11 +612,51 @@ function CreateGui(index)
     --add mining productivity increase
     addGUIRow(
         layout3,
-        "Team mining drill productivity bonus percentage:",
-        "mining_drill_productivity_bonus",
+        "Team lab research speed bonus percentage:",
+        "laboratory_speed_modifier",
         {"property.unit_percent"},
         1,
-        "mining_drill_productivity_bonus_button"
+        "laboratory_speed_modifier_button"
+    )
+
+    --add mining productivity increase
+    addGUIRow(
+        layout3,
+        "Team lab research productivity bonus percentage:",
+        "laboratory_productivity_bonus",
+        {"property.unit_percent"},
+        1,
+        "laboratory_productivity_bonus_button"
+    )
+
+    --add mining productivity increase
+    addGUIRow(
+        layout3,
+        "Team worker robot speed bonus percentage:",
+        "worker_robots_speed_modifier",
+        {"property.unit_percent"},
+        1,
+        "worker_robots_speed_modifier_button"
+    )
+
+    --add mining productivity increase
+    addGUIRow(
+        layout3,
+        "Team worker robot battery bonus percentage:",
+        "worker_robots_battery_modifier",
+        {"property.unit_percent"},
+        1,
+        "worker_robots_battery_modifier_button"
+    )
+
+    --add mining productivity increase
+    addGUIRow(
+        layout3,
+        "Team worker robot inventory bonus:",
+        "worker_robots_storage_bonus",
+        "item(s)",
+        30,
+        "worker_robots_storage_bonus_button"
     )
      
 end
@@ -682,7 +727,6 @@ function OnEntityDied(event)
             end
         end
     end
-    --玩家死亡扣经验
 end
 
 function onPlayerCraftedItem(event)
@@ -903,7 +947,88 @@ function OnGuiClick(event)
             player.force.mining_drill_productivity_bonus = player.force.mining_drill_productivity_bonus + increase_amount;
             
             --update ui with percentage modified
-            player.gui.left.rpg.layout3.mining_drill_productivity_bonus.caption = string.format("%.2d", global.rpg.players[index].mining_drill_productivity_bonus*100)
+            player.gui.left.rpg.layout3.mining_drill_productivity_bonus.caption = string.format("%.2f", global.rpg.players[index].mining_drill_productivity_bonus*100)
+        else
+            NoPoint(player)
+        end
+    elseif event.element.name == "laboratory_speed_modifier_button" then
+        if global.rpg.players[index].point >=1 then
+            local increase_amount = .0005
+            global.rpg.players[index].point = global.rpg.players[index].point - 1
+            global.rpg.players[index].laboratory_speed_modifier = global.rpg.players[index].laboratory_speed_modifier + increase_amount
+            --update skill points remaining in ui
+            player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
+            
+            --apply increase to force
+            player.force.laboratory_speed_modifier = player.force.laboratory_speed_modifier + increase_amount;
+            
+            --update ui with percentage modified
+            player.gui.left.rpg.layout3.laboratory_speed_modifier.caption = string.format("%.2f", global.rpg.players[index].laboratory_speed_modifier*100)
+        else
+            NoPoint(player)
+        end
+    elseif event.element.name == "laboratory_productivity_bonus_button" then
+        if global.rpg.players[index].point >=1 then
+            local increase_amount = .0005
+            global.rpg.players[index].point = global.rpg.players[index].point - 1
+            global.rpg.players[index].laboratory_productivity_bonus = global.rpg.players[index].laboratory_productivity_bonus + increase_amount
+            --update skill points remaining in ui
+            player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
+            
+            --apply increase to force
+            player.force.laboratory_productivity_bonus = player.force.laboratory_productivity_bonus + increase_amount;
+            
+            --update ui with percentage modified
+            player.gui.left.rpg.layout3.laboratory_productivity_bonus.caption = string.format("%.2f", global.rpg.players[index].laboratory_productivity_bonus*100)
+        else
+            NoPoint(player)
+        end
+    elseif event.element.name == "worker_robots_speed_modifier_button" then
+        if global.rpg.players[index].point >=1 then
+            local increase_amount = .0005
+            global.rpg.players[index].point = global.rpg.players[index].point - 1
+            global.rpg.players[index].worker_robots_speed_modifier = global.rpg.players[index].worker_robots_speed_modifier + increase_amount
+            --update skill points remaining in ui
+            player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
+            
+            --apply increase to force
+            player.force.worker_robots_speed_modifier = player.force.worker_robots_speed_modifier + increase_amount;
+            
+            --update ui with percentage modified
+            player.gui.left.rpg.layout3.worker_robots_speed_modifier.caption = string.format("%.2f", global.rpg.players[index].worker_robots_speed_modifier*100)
+        else
+            NoPoint(player)
+        end
+    elseif event.element.name == "worker_robots_battery_modifier_button" then
+        if global.rpg.players[index].point >=1 then
+            local increase_amount = .0005
+            global.rpg.players[index].point = global.rpg.players[index].point - 1
+            global.rpg.players[index].worker_robots_battery_modifier = global.rpg.players[index].worker_robots_battery_modifier + increase_amount
+            --update skill points remaining in ui
+            player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
+            
+            --apply increase to force
+            player.force.worker_robots_battery_modifier = player.force.worker_robots_battery_modifier + increase_amount;
+            
+            --update ui with percentage modified
+            player.gui.left.rpg.layout3.worker_robots_battery_modifier.caption = string.format("%.2f", global.rpg.players[index].worker_robots_battery_modifier*100)
+        else
+            NoPoint(player)
+        end
+    elseif event.element.name == "worker_robots_storage_bonus_button" then
+        local cost = 30
+        if global.rpg.players[index].point >= cost then
+            local increase_amount = 1
+            global.rpg.players[index].point = global.rpg.players[index].point - cost
+            global.rpg.players[index].worker_robots_storage_bonus = global.rpg.players[index].worker_robots_storage_bonus + increase_amount
+            --update skill points remaining in ui
+            player.gui.left.rpg.layout2.label2_2.caption = global.rpg.players[index].point
+            
+            --apply increase to force
+            player.force.worker_robots_storage_bonus = player.force.worker_robots_storage_bonus + increase_amount;
+            
+            --update ui with percentage modified
+            player.gui.left.rpg.layout3.worker_robots_storage_bonus.caption = global.rpg.players[index].worker_robots_storage_bonus
         else
             NoPoint(player)
         end
@@ -1056,6 +1181,34 @@ function AddExp(index, Exp, Tips)
     end
 end
 
+-- remove team upgrades from team when that player leaves
+function OnPlayerLeftGame(event)
+    local index = event.player_index
+    local player = global.players[index]
+
+    player.force.mining_drill_productivity_bonus = player.force.mining_drill_productivity_bonus + global.rpg.players[index].mining_drill_productivity_bonus;
+    player.force.worker_robots_storage_bonus = player.force.worker_robots_storage_bonus + global.rpg.players[index].worker_robots_storage_bonus;
+    player.force.worker_robots_speed_modifier = player.force.worker_robots_speed_modifier + global.rpg.players[index].worker_robots_speed_modifier;
+    player.force.worker_robots_battery_modifier = player.force.worker_robots_battery_modifier + global.rpg.players[index].worker_robots_battery_modifier;
+    player.force.laboratory_productivity_bonus = player.force.laboratory_productivity_bonus + global.rpg.players[index].laboratory_productivity_bonus;
+    player.force.laboratory_speed_modifier = player.force.laboratory_speed_modifier + global.rpg.players[index].laboratory_speed_modifier;
+    
+end
+
+-- add team upgrades from team when that player joins
+function OnPlayerJoinedGame(event)
+    local index = event.player_index
+    local player = global.players[index]
+
+    player.force.mining_drill_productivity_bonus = player.force.mining_drill_productivity_bonus - global.rpg.players[index].mining_drill_productivity_bonus;
+    player.force.worker_robots_storage_bonus = player.force.worker_robots_storage_bonus - global.rpg.players[index].worker_robots_storage_bonus;
+    player.force.worker_robots_speed_modifier = player.force.worker_robots_speed_modifier - global.rpg.players[index].worker_robots_speed_modifier;
+    player.force.worker_robots_battery_modifier = player.force.worker_robots_battery_modifier - global.rpg.players[index].worker_robots_battery_modifier;
+    player.force.laboratory_productivity_bonus = player.force.laboratory_productivity_bonus - global.rpg.players[index].laboratory_productivity_bonus;
+    player.force.laboratory_speed_modifier = player.force.laboratory_speed_modifier - global.rpg.players[index].laboratory_speed_modifier;
+    
+end
+
 script.on_init(OnInit)
 script.on_load(OnLoad)
 script.on_event(defines.events.on_tick, OnTick)
@@ -1068,7 +1221,8 @@ script.on_event(defines.events.on_player_crafted_item, onPlayerCraftedItem)
 script.on_event(defines.events.on_player_respawned, OnPlayerRespawned)
 script.on_event(defines.events.on_marked_for_deconstruction, OnMarkedForDeconstruction)
 script.on_event(defines.events.on_gui_click, OnGuiClick)
+--TODO give xp on tile mined
 -- script.on_event(defines.events.on_player_mined_tile, OnPlayerMinedTile)
 -- script.on_event(defines.events.on_player_mined_item, OnPlayerMinedTile)
---todo affect team values when a player joins / leaves a game
--- on_player_joined_game
+script.on_event(defines.events.on_player_joined_game, OnPlayerJoinedGame)
+script.on_event(defines.events.on_player_left_game, OnPlayerLeftGame)
