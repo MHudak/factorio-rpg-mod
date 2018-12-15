@@ -48,7 +48,7 @@ function CreateGui(index)
         global.rpg.players,
         {
             lv=1,
-            exp=1000,
+            exp=0,
             point=0,
             crafting_speed=0,
             mining_speed=0,
